@@ -61,5 +61,18 @@
     "No full application verification on Windows or Linux",
     "No new paid AI test or model evaluation",
     "No cross-machine restore test"
-  ]
+  ],
+  "update": {
+    "from": "ac6033a (initial public release)",
+    "to": "v0.1.1 documentation and CI changes",
+    "dependencyReinstall": "passed",
+    "sameLoginFilesAndTaskAfterRestart": true,
+    "businessSourceAndDatabaseMigrationsUnchanged": true
+  },
+  "publicationChecks": {
+    "trackedFiles": 425,
+    "brokenRelativeDocumentationLinks": 0,
+    "personalCredentialExactMatches": 0,
+    "examplePdfHashesVerified": 6
+  }
 }
