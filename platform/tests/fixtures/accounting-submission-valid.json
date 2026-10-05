@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "environment": "DEV",
+  "organization_key": "demo-accounting-firm",
+  "workflow_template_key": "accounting.monthly.document_collection",
+  "case_key": "demo-accounting-firm|accounting.monthly.document_collection|client-demo-001|2026-07",
+  "subject": {
+    "subject_key": "client-demo-001",
+    "display_name": "Demo Client One"
+  },
+  "source": {
+    "type": "fillout",
+    "submission_id": "submission-fixture-001",
+    "received_at": "2026-08-06T08:00:00Z",
+    "source_reference": "fixture://fillout/submission-fixture-001"
+  },
+  "business_context": {
+    "period": "2026-07",
+    "timezone": "Pacific/Auckland"
+  },
+  "files": [
+    {
+      "source_file_id": "file-fixture-001",
+      "original_filename": "statement-july.pdf",
+      "download_url": "https://example.invalid/fixtures/statement-july.pdf",
+      "declared_mime_type": "application/pdf",
+      "declared_size_bytes": 123456
+    }
+  ]
+}
+

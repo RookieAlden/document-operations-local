@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "environment": "DEV",
+  "organization_key": "dev-accounting-firm",
+  "workflow_template_key": "accounting.monthly.document_collection",
+  "case_key": "dev-accounting-firm|accounting.monthly.document_collection|dev-client-001|2026-07",
+  "subject": {
+    "subject_key": "dev-client-001",
+    "display_name": "Kauri Coast Café Limited"
+  },
+  "source": {
+    "type": "fillout",
+    "submission_id": "submission-dev-client-001-2026-07-001",
+    "received_at": "2026-08-06T10:00:00Z",
+    "source_reference": "fixture://fillout/submission-dev-client-001-2026-07-001"
+  },
+  "business_context": {
+    "period": "2026-07",
+    "timezone": "Pacific/Auckland"
+  },
+  "files": [
+    {
+      "source_file_id": "file-dev-client-001-bank-001",
+      "original_filename": "kauri-coast-cafe-bank-july.pdf",
+      "download_url": "https://example.invalid/fixtures/kauri-coast-cafe-bank-july.pdf",
+      "declared_mime_type": "application/pdf",
+      "declared_size_bytes": 123456
+    }
+  ]
+}

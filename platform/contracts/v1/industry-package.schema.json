@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aijiaofu.example/schemas/v1/industry-package.schema.json",
+  "title": "Industry Package v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "package_key",
+    "package_version",
+    "workflow_template_key",
+    "display_name",
+    "timezone",
+    "document_types",
+    "requirement_profile",
+    "routing",
+    "notifications",
+    "storage",
+    "handoff"
+  ],
+  "properties": {
+    "package_key": { "type": "string", "pattern": "^[a-z][a-z0-9._-]+$", "maxLength": 160 },
+    "package_version": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "workflow_template_key": { "type": "string", "pattern": "^[a-z][a-z0-9._-]+$", "maxLength": 200 },
+    "display_name": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "timezone": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "document_types": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "display_name", "allowed_mime_types", "automatic_acceptance"],
+        "properties": {
+          "code": { "type": "string", "pattern": "^[a-z][a-z0-9_]+$", "maxLength": 120 },
+          "display_name": { "type": "string", "minLength": 1, "maxLength": 300 },
+          "allowed_mime_types": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 3, "maxLength": 200 }
+          },
+          "automatic_acceptance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["minimum_confidence", "reject_on_quality_flags", "reject_on_conflict_flags"],
+            "properties": {
+              "minimum_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+              "reject_on_quality_flags": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+              "reject_on_conflict_flags": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "requirement_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["set_key", "version", "requirements"],
+      "properties": {
+        "set_key": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "version": { "type": "integer", "minimum": 1 },
+        "requirements": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["requirement_code", "document_type_code", "minimum_count"],
+            "properties": {
+              "requirement_code": { "type": "string", "minLength": 1, "maxLength": 200 },
+              "document_type_code": { "type": "string", "minLength": 1, "maxLength": 120 },
+              "minimum_count": { "type": "integer", "minimum": 0 },
+              "maximum_count": { "type": ["integer", "null"], "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "routing": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string", "minLength": 1, "maxLength": 160 }
+    },
+    "notifications": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["external_messages_require_approval", "send_from", "recipient_source", "dev_recipient_policy"],
+      "properties": {
+        "external_messages_require_approval": { "const": true },
+        "send_from": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "recipient_source": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "dev_recipient_policy": { "const": "allowlist_only" }
+      }
+    },
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["incoming_path_template", "archive_path_template", "filename_template", "never_overwrite"],
+      "properties": {
+        "incoming_path_template": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "archive_path_template": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "filename_template": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "never_overwrite": { "const": true }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completion_condition", "task_type", "assignee_role"],
+      "properties": {
+        "completion_condition": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "task_type": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "assignee_role": { "type": "string", "minLength": 1, "maxLength": 160 }
+      }
+    }
+  }
+}

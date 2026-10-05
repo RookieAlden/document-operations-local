@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f7f8f6">
+    <title>员工工作台 · 资料运营</title>
+    <link rel="icon" href="/ops/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/workbench/app.css?v=m48">
+    <script src="/workbench/app.js?v=m48" type="module"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <main id="boot-view" class="entry" aria-labelledby="boot-title">
+      <section class="entry-copy">
+        <p class="brand-line"><span aria-hidden="true">D</span> 资料运营</p>
+        <h1 id="boot-title">员工工作台</h1>
+        <p>正在恢复你的工作会话。</p>
+      </section>
+      <section class="entry-card" aria-live="polite">
+        <span class="loader" aria-hidden="true"></span>
+        <h2 id="boot-status">正在连接</h2>
+        <p id="boot-message">通常只需要几秒钟。</p>
+        <button id="boot-retry" class="button primary" type="button" hidden>重新连接</button>
+      </section>
+    </main>
+
+    <main id="login-view" class="entry" aria-labelledby="login-title" hidden>
+      <section class="entry-copy">
+        <p class="brand-line"><span aria-hidden="true">D</span> 资料运营</p>
+        <h1 id="login-title">从客户开户开始，完成资料收集。</h1>
+        <p>这里仅提供会计人员的日常工作，不展示系统配置和技术后台。</p>
+        <p class="boundary">当前为 UAT 虚构资料环境</p>
+      </section>
+      <section class="entry-card" aria-label="员工工作台登录">
+        <h2>登录员工工作台</h2>
+        <form id="login-form" novalidate>
+          <label class="field" for="login-email"><span>工作邮箱</span><input id="login-email" name="email" type="email" autocomplete="username" required maxlength="254"></label>
+          <label class="field" for="login-password"><span>密码</span><input id="login-password" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="1024"></label>
+          <label class="remember" for="login-remember"><input id="login-remember" name="rememberDevice" type="checkbox"><span>在这台设备上保持登录 30 天</span></label>
+          <p id="login-error" class="error" role="alert" hidden></p>
+          <button class="button primary" type="submit">进入工作台</button>
+        </form>
+      </section>
+    </main>
+
+    <div id="app-shell" class="shell" hidden>
+      <header class="topbar">
+        <a class="brand" href="/workbench"><span aria-hidden="true">D</span><strong>员工工作台</strong></a>
+        <div class="operator"><span id="operator-name"></span><button id="logout-button" class="quiet-button" type="button">退出</button></div>
+      </header>
+      <div class="layout">
+        <aside class="sidebar" aria-label="员工工作台导航">
+          <nav>
+            <button class="nav-item is-active" data-view="today" type="button"><span>今日待办</span><small>开始或继续工作</small></button>
+            <button class="nav-item" data-view="cases" type="button"><span>客户与资料收集</span><small>查看所有进行中工作</small></button>
+            <button class="nav-item" data-view="completed" type="button"><span>已完成</span><small>查看完成记录</small></button>
+          </nav>
+          <p class="sidebar-note">仅限已批准的虚构资料<br>高级设置在独立运营台中管理</p>
+        </aside>
+
+        <main id="main-content" class="content" tabindex="-1">
+          <header class="page-header">
+            <div><p id="page-overline" class="overline">今天</p><h1 id="page-title">今日待办</h1><p id="page-description">先处理最上方事项；没有待办时再开始新客户。</p></div>
+            <button id="start-client" class="button primary" type="button">新建客户并开始资料收集</button>
+          </header>
+
+          <section id="today-view" class="view">
+            <div id="today-action-list" class="action-list" aria-live="polite"></div>
+            <article id="today-start-card" class="welcome-card">
+              <div><p class="overline">推荐下一步</p><h2>为一个新客户建立资料收集</h2><p>选择月度或季度服务，确认需要的资料，然后一次完成开户和资料收集任务创建。</p></div>
+              <button class="button secondary" data-start-client type="button">开始新客户</button>
+            </article>
+            <div class="section-heading"><h2>进行中的资料收集</h2><button class="text-button" data-view="cases" type="button">查看全部</button></div>
+            <div id="today-case-list" class="case-list" aria-live="polite"></div>
+          </section>
+
+          <section id="cases-view" class="view" hidden>
+            <div id="active-case-list" class="case-list" aria-live="polite"></div>
+          </section>
+
+          <section id="completed-view" class="view" hidden>
+            <div id="completed-case-list" class="case-list" aria-live="polite"></div>
+          </section>
+
+          <section id="detail-view" class="view" hidden>
+            <button id="detail-back" class="back-button" type="button">← 返回列表</button>
+            <div id="detail-content" aria-live="polite"></div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <dialog id="client-dialog" class="dialog" aria-labelledby="dialog-title">
+      <form id="client-form" method="dialog" novalidate>
+        <header class="dialog-header">
+          <div><p class="overline">新客户资料收集</p><h2 id="dialog-title">新建客户</h2></div>
+          <button id="dialog-close" class="icon-button" type="button" aria-label="关闭">×</button>
+        </header>
+        <ol class="steps" aria-label="创建进度">
+          <li class="is-current" data-step-dot="1">客户</li><li data-step-dot="2">服务</li><li data-step-dot="3">期间</li><li data-step-dot="4">资料要求</li>
+        </ol>
+        <div id="draft-notice" class="draft-notice" hidden>已恢复上次未完成的内容，你可以继续。</div>
+        <section class="form-step" data-step="1">
+          <h3>客户是谁？</h3><p>只填写员工日常会使用的名称。</p>
+          <label class="field" for="customer-name"><span>客户名称</span><input id="customer-name" required minlength="2" maxlength="160" placeholder="例如：星河咨询有限公司"></label>
+          <label class="field" for="contact-name"><span>联系人姓名（选填）</span><input id="contact-name" minlength="2" maxlength="120" placeholder="例如：王女士"></label>
+        </section>
+        <section class="form-step" data-step="2" hidden>
+          <h3>选择服务方式</h3><p>系统会自动带出相应的资料要求。</p>
+          <div id="service-options" class="service-options"></div>
+        </section>
+        <section class="form-step" data-step="3" hidden>
+          <h3>选择工作期间</h3><p id="period-help">选择需要收集资料的月份或季度。</p>
+          <div id="monthly-period" class="period-picker" hidden><label class="field" for="period-month"><span>月份</span><input id="period-month" type="month"></label></div>
+          <div id="quarterly-period" class="period-picker" hidden>
+            <label class="field" for="period-year"><span>年份</span><input id="period-year" type="number" min="2020" max="2035" step="1"></label>
+            <fieldset><legend>季度</legend><div class="quarter-options"><label><input type="radio" name="quarter" value="1">第一季度</label><label><input type="radio" name="quarter" value="2">第二季度</label><label><input type="radio" name="quarter" value="3">第三季度</label><label><input type="radio" name="quarter" value="4">第四季度</label></div></fieldset>
+          </div>
+        </section>
+        <section class="form-step" data-step="4" hidden>
+          <h3>确认需要的资料</h3><p>取消不需要的项目，或调整最低份数。至少保留一项。</p>
+          <div id="requirements" class="requirements"></div>
+          <div id="creation-summary" class="summary-box"></div>
+        </section>
+        <p id="client-form-error" class="error" role="alert" hidden></p>
+        <footer class="dialog-footer">
+          <button id="step-back" class="button secondary" type="button" hidden>上一步</button>
+          <span></span>
+          <button id="step-next" class="button primary" type="button">下一步</button>
+          <button id="create-client-case" class="button primary" type="submit" hidden>创建客户和资料收集</button>
+        </footer>
+      </form>
+    </dialog>
+  </body>
+</html>

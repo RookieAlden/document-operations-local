@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aijiaofu.example/schemas/v1/workflow-event.schema.json",
+  "title": "Workflow Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "idempotency_key",
+    "event_type",
+    "event_version",
+    "organization_id",
+    "aggregate_type",
+    "aggregate_id",
+    "correlation_id",
+    "producer",
+    "occurred_at",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "event_id": { "type": "string", "format": "uuid" },
+    "idempotency_key": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "event_type": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9.]+$", "maxLength": 200 },
+    "event_version": { "type": "integer", "minimum": 1 },
+    "organization_id": { "type": "string", "format": "uuid" },
+    "aggregate_type": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "aggregate_id": { "type": "string", "format": "uuid" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "causation_id": { "type": ["string", "null"], "format": "uuid" },
+    "actor_id": { "type": ["string", "null"], "format": "uuid" },
+    "producer": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "payload": { "type": "object", "additionalProperties": true }
+  }
+}
+

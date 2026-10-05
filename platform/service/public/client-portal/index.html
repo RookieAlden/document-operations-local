@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>资料提交入口 · UAT</title>
+  <link rel="stylesheet" href="/client-portal/app.css?v=m48">
+  <script src="/client-portal/app.js?v=m48" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="#main-content" aria-label="资料提交入口首页">
+        <span class="wordmark-mark" aria-hidden="true">D</span>
+        <span><strong>资料提交入口</strong><small>隔离 UAT</small></span>
+      </a>
+      <span class="boundary-pill">仅限纯虚构资料</span>
+    </div>
+  </header>
+
+  <main id="main-content" tabindex="-1">
+    <section id="loading-view" class="state-view" aria-live="polite">
+      <div class="loading-line loading-line-title"></div>
+      <div class="loading-line"></div>
+      <div class="loading-line loading-line-short"></div>
+      <p>正在核对您的专属链接和资料状态……</p>
+    </section>
+
+    <section id="error-view" class="state-view" hidden aria-live="assertive">
+      <span class="state-symbol" aria-hidden="true">!</span>
+      <h1>这个链接现在不能使用</h1>
+      <p id="error-message">链接可能已过期、已撤销或不完整。请联系向您提供链接的会计人员。</p>
+    </section>
+
+    <div id="portal-view" hidden>
+      <section class="case-intro" aria-labelledby="case-title">
+        <div class="case-context">
+          <p id="organization-name" class="organization-name"></p>
+          <h1 id="case-title"></h1>
+          <p id="period-label" class="period-label"></p>
+        </div>
+        <div id="overall-status" class="overall-status" role="status"></div>
+      </section>
+
+      <section class="synthetic-notice" aria-label="资料安全边界">
+        <strong>请只提交完全虚构的测试资料</strong>
+        <p>不要上传任何真实个人、企业、银行、税务或客户信息。此入口只连接隔离 UAT，不会向外发送邮件。</p>
+      </section>
+
+      <section class="progress-section" aria-labelledby="progress-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="progress-title">当前资料清单</h2>
+            <p>“已接受”才会计入齐全判断；系统处理和会计人员确认会分别显示。</p>
+          </div>
+          <p id="progress-summary" class="progress-summary"></p>
+        </div>
+        <progress id="progress-bar" class="progress-track" max="100" value="0" aria-label="资料清单完成进度"></progress>
+        <div id="requirements-list" class="requirements-list"></div>
+      </section>
+
+      <section id="questions-section" class="questions-section" aria-labelledby="questions-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="questions-title">需要您处理的问题</h2>
+            <p>这里只显示会计人员明确发布给您的问题，不会展示内部备注。</p>
+          </div>
+        </div>
+        <div id="questions-list"></div>
+      </section>
+
+      <section class="documents-section" aria-labelledby="documents-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="documents-title">已经提交的资料</h2>
+            <p>处理状态会自动更新。精确重复或不计入本次资料清单的文件仍会保留提交记录。</p>
+          </div>
+          <button id="refresh-button" class="button button-secondary" type="button">刷新状态</button>
+        </div>
+        <div id="documents-list" class="documents-list"></div>
+      </section>
+
+      <section class="upload-section" aria-labelledby="upload-title">
+        <div class="upload-copy">
+          <h2 id="upload-title">上传或补交资料</h2>
+          <p id="upload-help">每批最多5个文件，只接受PDF、JPG、JPEG和PNG。上传表单会在一个全新的标签页打开。</p>
+          <p id="invitation-meta" class="invitation-meta"></p>
+        </div>
+        <a id="open-upload-button" class="button button-primary" target="_blank" rel="noreferrer noopener">打开新的上传页面</a>
+        <div id="upload-return" class="upload-return" hidden role="status">
+          <div><strong>上传页面已经打开</strong><p>在新标签页选择文件并点击提交。看到提交成功后，请关闭该标签页并回到这里；本页会自动更新。</p></div>
+          <button id="uploaded-refresh-button" class="button button-secondary" type="button">我已提交，立即查看进度</button>
+        </div>
+      </section>
+
+      <footer class="portal-footer">
+        <p>需要分批上传时，每一批都从本页打开新的上传页面；不要在已经提交成功的旧页面再次提交。</p>
+        <p id="last-updated"></p>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>

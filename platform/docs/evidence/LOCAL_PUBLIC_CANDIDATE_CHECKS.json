@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-05",
+  "status": "passed",
+  "environment": {
+    "os": "macOS",
+    "node": "24.19.0",
+    "postgres": "17.10",
+    "pnpm": "11.19.0"
+  },
+  "installation": "Separate directory, frozen lockfile with local dependency cache, fresh PostgreSQL database, separate personal configuration with no API key",
+  "unitAndInterfaceTests": 406,
+  "testFiles": 63,
+  "browserChecks": [
+    "browser creates customer and collection; replay creates no second case",
+    "missing documents block completion on server",
+    "upload and replay preserve exactly one document",
+    "no API key: no paid calls; file can be manually classified and accepted",
+    "request supplement, keep open question blocking handoff, upload and review replacement, retain excluded original, close question",
+    "non-example document blocks handoff until reviewed/excluded; original remains",
+    "accepted file can return to review without bypassing completion gate",
+    "completion creates exactly one handoff task across repeated requests",
+    "next handoff task can be started and completed from the employee UI",
+    "actual handoff checklist rendered and exported to PDF",
+    "original operations console opens with local shared login",
+    "app and PostgreSQL restart: fixed login, completed history, files and task preserved"
+  ],
+  "paidCalls": 0,
+  "personalCredentialExactMatches": 0,
+  "genericScanFindings": [
+    {
+      "file": "platform/service/test/microsoft-mail-uat.test.ts",
+      "finding": "private-key PEM marker",
+      "review": "Base64 ZmFrZQ== decodes to fake; intentional invalid test fixture, no usable credential"
+    }
+  ],
+  "privateGitHistoryIncluded": false,
+  "limitations": [
+    "Same-machine install only; not tested on Linux or Windows",
+    "No claim of a fresh-network dependency download",
+    "Cloud resources not changed; publishing needs approval"
+  ]
+}

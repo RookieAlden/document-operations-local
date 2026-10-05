@@ -1,0 +1,25 @@
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
+# Local dependencies and build output
+**/node_modules/
+**/dist/
+**/coverage/
+
+# Local runtime configuration and credentials
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+
+# Render caches and disposable working files
+tmp/
+.local/
+
+# Editor and local tooling state
+.idea/
+.vscode/
+*.swp
+*~

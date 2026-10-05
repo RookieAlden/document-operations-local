@@ -1,0 +1,415 @@
+{
+  "date": "2026-10-05T04:00:25.321Z",
+  "result": "passed",
+  "scope": "Six fictional originals through local browser, actual OpenAI Responses API, human review, handoff and restart. Not a statistical quality certification.",
+  "approval": {
+    "model": "gpt-5.6-sol",
+    "maxGenerationRequests": 6,
+    "budgetUsd": 3,
+    "automaticRetries": false
+  },
+  "casePeriod": {
+    "start": "2026-07-01",
+    "end": "2026-09-30"
+  },
+  "providerModels": [
+    "gpt-5.6-sol"
+  ],
+  "paidGenerationCalls": 6,
+  "inputTokens": 6561,
+  "outputTokens": 2322,
+  "estimatedUsd": 0.072684,
+  "reservedBudgetUsd": 3,
+  "checks": [
+    "Six real original-file classifications returned and were persisted",
+    "Wrong period and unknown file require review and block completion",
+    "Human review resolves exceptions; handoff completion is idempotent",
+    "Handoff task started and completed through employee UI",
+    "App and database restarted: real AI results, six originals, completed task, fixed login and budget ledger preserved"
+  ],
+  "files": [
+    {
+      "file": "01-bank-statement.pdf",
+      "sha256": "e8fc6b8ed2111c7c78fbe82b825fe167af7372d524b06d4c59a74c4d7dd487c8",
+      "category": "standard",
+      "expectedType": "bank_statement",
+      "providerStatus": "succeeded",
+      "providerModel": "gpt-5.6-sol",
+      "modelResult": {
+        "reason": "The document explicitly identifies itself as a bank statement and contains an account holder, statement period, opening and closing balances, and dated debit/credit transactions.",
+        "evidence": [
+          {
+            "page": 1,
+            "label": "document_title",
+            "value": "Bank statement"
+          },
+          {
+            "page": 1,
+            "label": "account_holder",
+            "value": "Kauri Demo Bank | Account holder: Blue Peak Consulting Limited"
+          },
+          {
+            "page": 1,
+            "label": "statement_period",
+            "value": "Statement period: 1 September 2026 to 30 September 2026"
+          },
+          {
+            "page": 1,
+            "label": "balance_summary",
+            "value": "Opening balance: NZD 1,000.00; Closing balance: NZD 1,460.00"
+          },
+          {
+            "page": 1,
+            "label": "transaction_evidence",
+            "value": "03 Sep | Client payment | Credit 575.00 | Balance 1,575.00"
+          }
+        ],
+        "confidence": 0.99,
+        "quality_flags": [],
+        "conflict_flags": [],
+        "schema_version": "2.0-candidate.1",
+        "detected_period": "1 September 2026 to 30 September 2026",
+        "extracted_fields": {
+          "bank_name": "Kauri Demo Bank",
+          "account_holder": "Blue Peak Consulting Limited",
+          "account_number": "DEMO-001",
+          "statement_end_date": "2026-09-30",
+          "closing_balance_nzd": 1460,
+          "opening_balance_nzd": 1000,
+          "document_data_status": "FICTIONAL DEMONSTRATION - NO REAL CUSTOMER OR BANK DATA",
+          "statement_start_date": "2026-09-01"
+        },
+        "abstention_reason": null,
+        "classification_outcome": "classified",
+        "detected_subject_references": [
+          "Blue Peak Consulting Limited"
+        ],
+        "predicted_document_type_code": "bank_statement"
+      },
+      "applicationOutcome": "accepted",
+      "reviewReasons": [],
+      "finalStatus": "automatically_accepted"
+    },
+    {
+      "file": "02-sales-invoice.pdf",
+      "sha256": "fec62562811012ef159a6050a6299abbec4f0e3fe3fbc53b6a24aa3fa30a7e17",
+      "category": "standard",
+      "expectedType": "invoice",
+      "providerStatus": "succeeded",
+      "providerModel": "gpt-5.6-sol",
+      "modelResult": {
+        "reason": "The document is explicitly labeled as a tax invoice and contains standard invoice fields, including seller, customer, invoice number, dates, line description, GST, and total due.",
+        "evidence": [
+          {
+            "page": 1,
+            "label": "document heading",
+            "value": "Tax invoice"
+          },
+          {
+            "page": 1,
+            "label": "seller",
+            "value": "Seller: Blue Peak Consulting Limited"
+          },
+          {
+            "page": 1,
+            "label": "invoice identifier",
+            "value": "Invoice number: DEMO-2026-0901"
+          },
+          {
+            "page": 1,
+            "label": "invoice dates",
+            "value": "Invoice date: 3 September 2026 | Due: 20 September 2026"
+          },
+          {
+            "page": 1,
+            "label": "amount summary",
+            "value": "Net: NZD 500.00 | GST (15%): NZD 75.00; Total due: NZD 575.00"
+          }
+        ],
+        "confidence": 0.99,
+        "quality_flags": [],
+        "conflict_flags": [],
+        "schema_version": "2.0-candidate.1",
+        "detected_period": "2026-Q3",
+        "extracted_fields": {
+          "seller": "Blue Peak Consulting Limited",
+          "bill_to": "Harbourlight Demo Services Limited",
+          "currency": "NZD",
+          "due_date": "2026-09-20",
+          "gst_rate": "15%",
+          "total_due": 575,
+          "gst_amount": 75,
+          "net_amount": 500,
+          "description": "September consulting services",
+          "invoice_date": "2026-09-03",
+          "invoice_number": "DEMO-2026-0901"
+        },
+        "abstention_reason": null,
+        "classification_outcome": "classified",
+        "detected_subject_references": [
+          "Blue Peak Consulting Limited",
+          "Harbourlight Demo Services Limited"
+        ],
+        "predicted_document_type_code": "invoice"
+      },
+      "applicationOutcome": "accepted",
+      "reviewReasons": [],
+      "finalStatus": "automatically_accepted"
+    },
+    {
+      "file": "03-expense-receipt.pdf",
+      "sha256": "de6ffab822eecfea7d7b812ca3f81ebb3ecbc9c6cd08ef587c09d51e6b489ca3",
+      "category": "standard",
+      "expectedType": "expense_receipt",
+      "providerStatus": "succeeded",
+      "providerModel": "gpt-5.6-sol",
+      "modelResult": {
+        "reason": "The document is explicitly labeled as a payment receipt and records a completed purchase, including the merchant, customer, transaction date, GST, total paid, payment method, and zero balance. The customer and transaction date match the expected subject and 2026-Q3 period.",
+        "evidence": [
+          {
+            "page": 1,
+            "label": "Document title",
+            "value": "Payment receipt"
+          },
+          {
+            "page": 1,
+            "label": "Receipt identifier",
+            "value": "Kauri Demo Office Supplies | Receipt DEMO-R-0912"
+          },
+          {
+            "page": 1,
+            "label": "Customer",
+            "value": "Customer: Blue Peak Consulting Limited"
+          },
+          {
+            "page": 1,
+            "label": "Transaction date",
+            "value": "Transaction date: 12 September 2026"
+          },
+          {
+            "page": 1,
+            "label": "Payment total",
+            "value": "GST (15%): NZD 15.00 | Total paid: NZD 115.00"
+          },
+          {
+            "page": 1,
+            "label": "Payment status",
+            "value": "Paid by demo card ending 0000 | Balance due: NZD 0.00"
+          }
+        ],
+        "confidence": 0.99,
+        "quality_flags": [],
+        "conflict_flags": [],
+        "schema_version": "2.0-candidate.1",
+        "detected_period": "2026-Q3",
+        "extracted_fields": {
+          "gst_nzd": 15,
+          "customer": "Blue Peak Consulting Limited",
+          "merchant": "Kauri Demo Office Supplies",
+          "description": "Office stationery",
+          "subtotal_nzd": 100,
+          "demo_document": true,
+          "payment_method": "demo card ending 0000",
+          "receipt_number": "DEMO-R-0912",
+          "total_paid_nzd": 115,
+          "balance_due_nzd": 0,
+          "transaction_date": "12 September 2026"
+        },
+        "abstention_reason": null,
+        "classification_outcome": "classified",
+        "detected_subject_references": [
+          "Blue Peak Consulting Limited"
+        ],
+        "predicted_document_type_code": "expense_receipt"
+      },
+      "applicationOutcome": "accepted",
+      "reviewReasons": [],
+      "finalStatus": "automatically_accepted"
+    },
+    {
+      "file": "04-independent-statement.pdf",
+      "sha256": "d118561bf35afd2a5948db5efc4c6d736a8341e27daf846dd86e3539f52818ae",
+      "category": "independent_layout",
+      "expectedType": "bank_statement",
+      "providerStatus": "succeeded",
+      "providerModel": "gpt-5.6-sol",
+      "modelResult": {
+        "reason": "The document presents account activity for Blue Peak Consulting Limited, including a reporting interval, opening balance, dated credits and debits, and an ending balance. These features establish it as a bank statement, despite being labeled as fictional demonstration data.",
+        "evidence": [
+          {
+            "page": 1,
+            "label": "Document heading",
+            "value": "ACCOUNT ACTIVITY"
+          },
+          {
+            "page": 1,
+            "label": "Subject",
+            "value": "BLUE PEAK CONSULTING LIMITED"
+          },
+          {
+            "page": 1,
+            "label": "Period",
+            "value": "Reporting interval 01/09/2026 - 30/09/2026"
+          },
+          {
+            "page": 1,
+            "label": "Opening balance",
+            "value": "Balance brought forward NZD 250.00"
+          },
+          {
+            "page": 1,
+            "label": "Transactions",
+            "value": "2026-09-16 Incoming consulting payment +345.00; 2026-09-24 Office rent -230.00"
+          },
+          {
+            "page": 1,
+            "label": "Closing balance",
+            "value": "Funds at end of interval: NZD 365.00"
+          },
+          {
+            "page": 1,
+            "label": "Document status",
+            "value": "FICTIONAL DEMONSTRATION - NO REAL CUSTOMER OR BANK DATA"
+          }
+        ],
+        "confidence": 0.97,
+        "quality_flags": [],
+        "conflict_flags": [],
+        "schema_version": "2.0-candidate.1",
+        "detected_period": "01/09/2026 - 30/09/2026",
+        "extracted_fields": {
+          "currency": "NZD",
+          "account_holder": "BLUE PEAK CONSULTING LIMITED",
+          "account_reference": "NONSTANDARD-A",
+          "reporting_interval": "01/09/2026 - 30/09/2026",
+          "closing_balance_nzd": 365,
+          "opening_balance_nzd": 250,
+          "demonstration_document": true
+        },
+        "abstention_reason": null,
+        "classification_outcome": "classified",
+        "detected_subject_references": [
+          "BLUE PEAK CONSULTING LIMITED"
+        ],
+        "predicted_document_type_code": "bank_statement"
+      },
+      "applicationOutcome": "accepted",
+      "reviewReasons": [],
+      "finalStatus": "automatically_accepted"
+    },
+    {
+      "file": "05-wrong-period.pdf",
+      "sha256": "16591e07522842bfa4a75275c8c4fffb3b57062179ccb755ec90f28055b03cc7",
+      "category": "wrong_period",
+      "expectedType": "bank_statement",
+      "providerStatus": "succeeded",
+      "providerModel": "gpt-5.6-sol",
+      "modelResult": {
+        "reason": "The document is explicitly titled “Bank statement” and contains an account holder, statement period, opening balance, transaction, and closing balance. The observed August 2025 period conflicts with the expected 2026-Q3 period.",
+        "evidence": [
+          {
+            "page": 1,
+            "label": "document_title",
+            "value": "Bank statement"
+          },
+          {
+            "page": 1,
+            "label": "account_holder",
+            "value": "Kauri Demo Bank | Account holder: Blue Peak Consulting Limited"
+          },
+          {
+            "page": 1,
+            "label": "statement_period",
+            "value": "Statement period: 1 August 2025 to 31 August 2025"
+          },
+          {
+            "page": 1,
+            "label": "balance_details",
+            "value": "Opening balance: NZD 100.00; Closing balance: NZD 150.00"
+          }
+        ],
+        "confidence": 0.99,
+        "quality_flags": [],
+        "conflict_flags": [
+          "period_conflict"
+        ],
+        "schema_version": "2.0-candidate.1",
+        "detected_period": "2025-08-01 to 2025-08-31",
+        "extracted_fields": {
+          "account": "DEMO-OLD",
+          "currency": "NZD",
+          "bank_name": "Kauri Demo Bank",
+          "account_holder": "Blue Peak Consulting Limited",
+          "closing_balance": 150,
+          "opening_balance": 100,
+          "statement_period_end": "2025-08-31",
+          "statement_period_start": "2025-08-01"
+        },
+        "abstention_reason": null,
+        "classification_outcome": "classified",
+        "detected_subject_references": [
+          "Blue Peak Consulting Limited",
+          "DEMO-OLD"
+        ],
+        "predicted_document_type_code": "bank_statement"
+      },
+      "applicationOutcome": "review_required",
+      "reviewReasons": [
+        "conflict_flags_present",
+        "period_conflict"
+      ],
+      "finalStatus": "excluded"
+    },
+    {
+      "file": "06-garden-notes.pdf",
+      "sha256": "ae5aa1b7d330b453087a0b25ce04d54db1df80f852999adee93e1270258a3e7a",
+      "category": "unknown",
+      "expectedType": null,
+      "providerStatus": "succeeded",
+      "providerModel": "gpt-5.6-sol",
+      "modelResult": {
+        "reason": "The document is a personal gardening note and explicitly states that it is not an accounting record. It does not match any allowed document type.",
+        "evidence": [
+          {
+            "page": 1,
+            "label": "document title",
+            "value": "Weekend garden notes"
+          },
+          {
+            "page": 1,
+            "label": "content description",
+            "value": "This is a personal gardening note, not an accounting record."
+          },
+          {
+            "page": 1,
+            "label": "sample disclaimer",
+            "value": "FICTIONAL DEMONSTRATION - NO REAL CUSTOMER OR BANK DATA"
+          }
+        ],
+        "confidence": 0.99,
+        "quality_flags": [],
+        "conflict_flags": [],
+        "schema_version": "2.0-candidate.1",
+        "detected_period": null,
+        "extracted_fields": {},
+        "abstention_reason": "outside_allowed_types",
+        "classification_outcome": "unknown",
+        "detected_subject_references": [],
+        "predicted_document_type_code": null
+      },
+      "applicationOutcome": "review_required",
+      "reviewReasons": [
+        "classification_unknown",
+        "abstention_outside_allowed_types"
+      ],
+      "finalStatus": "excluded"
+    }
+  ],
+  "limitations": [
+    "No real client efficiency or commercial impact study",
+    "Six examples do not establish accuracy or re-certify the previous M44 release",
+    "All four accounting documents were explicitly reviewed by a human action before final handoff",
+    "Cloud backup, public release and owner video remain outstanding",
+    "USD 3 is reserved allowance; estimated token cost is not an invoice"
+  ]
+}

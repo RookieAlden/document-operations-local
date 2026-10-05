@@ -1,0 +1,73 @@
+{
+  "package_key": "accounting.monthly",
+  "package_version": "1.0.0-draft",
+  "workflow_template_key": "accounting.monthly.document_collection",
+  "display_name": "Monthly Accounting Document Collection",
+  "timezone": "Pacific/Auckland",
+  "document_types": [
+    {
+      "code": "bank_statement",
+      "display_name": "Bank Statement",
+      "allowed_mime_types": ["application/pdf"],
+      "automatic_acceptance": {
+        "minimum_confidence": 0.8,
+        "reject_on_quality_flags": ["blurry", "blank", "corrupt", "partial", "password_protected", "unsupported", "mime_mismatch"],
+        "reject_on_conflict_flags": ["subject_conflict", "period_conflict", "document_type_conflict"]
+      }
+    },
+    {
+      "code": "invoice",
+      "display_name": "Invoice",
+      "allowed_mime_types": ["application/pdf", "image/jpeg", "image/png"],
+      "automatic_acceptance": {
+        "minimum_confidence": 0.8,
+        "reject_on_quality_flags": ["blurry", "blank", "corrupt", "partial", "unsupported", "mime_mismatch"],
+        "reject_on_conflict_flags": ["subject_conflict", "period_conflict", "document_type_conflict"]
+      }
+    },
+    {
+      "code": "payroll_report",
+      "display_name": "Payroll Report",
+      "allowed_mime_types": ["application/pdf", "image/jpeg", "image/png"],
+      "automatic_acceptance": {
+        "minimum_confidence": 0.8,
+        "reject_on_quality_flags": ["blurry", "blank", "corrupt", "partial", "password_protected", "unsupported", "mime_mismatch"],
+        "reject_on_conflict_flags": ["subject_conflict", "period_conflict", "document_type_conflict"]
+      }
+    }
+  ],
+  "requirement_profile": {
+    "set_key": "accounting.monthly.standard",
+    "version": 1,
+    "requirements": [
+      { "requirement_code": "bank_statement.minimum", "document_type_code": "bank_statement", "minimum_count": 1 },
+      { "requirement_code": "invoice.minimum", "document_type_code": "invoice", "minimum_count": 2 },
+      { "requirement_code": "payroll.minimum", "document_type_code": "payroll_report", "minimum_count": 1 }
+    ]
+  },
+  "routing": {
+    "missing_requirement": "customer_contact",
+    "quality_or_classification_conflict": "assigned_staff",
+    "system_or_connector_failure": "system_admin",
+    "due_soon": "assigned_staff",
+    "overdue": "manager"
+  },
+  "notifications": {
+    "external_messages_require_approval": true,
+    "send_from": "shared_business_mailbox",
+    "recipient_source": "subject_primary_contact",
+    "dev_recipient_policy": "allowlist_only"
+  },
+  "storage": {
+    "incoming_path_template": "/{environment}/{organization_key}/{subject_key}/{period}/Incoming",
+    "archive_path_template": "/{environment}/{organization_key}/{subject_key}/{period}/{document_type_code}",
+    "filename_template": "{subject_key}_{period}_{document_type_code}_{sequence:02}.{extension}",
+    "never_overwrite": true
+  },
+  "handoff": {
+    "completion_condition": "all_requirements_satisfied_and_no_open_blocking_issues",
+    "task_type": "accounting.bookkeeping.start",
+    "assignee_role": "assigned_staff"
+  }
+}
+

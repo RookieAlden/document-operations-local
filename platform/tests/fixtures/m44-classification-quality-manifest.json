@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0",
+  "environment": "UAT",
+  "dataClassification": "synthetic_only",
+  "subjectKey": "uat-client-005",
+  "subjectDisplayName": "Blue Peak Consulting Limited",
+  "expectedPeriod": "2026-Q3",
+  "generatorSeed": "m44-blue-peak-risk-stratified-v1",
+  "routineBankStatementFamilies": 60,
+  "nearDuplicateVariants": 3,
+  "highRiskFamiliesPerType": 2,
+  "safetyFamiliesPerStratum": 2,
+  "highRiskDocumentTypeCodes": [
+    "invoice",
+    "expense_receipt",
+    "contractor_statement"
+  ],
+  "firstClientConfiguration": {
+    "syntheticOnly": true,
+    "requirements": {
+      "bank_statement": { "minimum": 3, "rule": "one statement per quarter month" },
+      "invoice": { "minimum": 4, "rule": "invoice number, date, currency and amount required" },
+      "contractor_statement": { "minimum": 1, "rule": "zero-contractor declaration accepted after review" },
+      "expense_receipt": { "minimum": 5, "rule": "foreign currency amount required" }
+    },
+    "deadlinePolicy": {
+      "clientDue": "2026-07-10T17:00:00+12:00",
+      "internalDue": "2026-07-21T17:00:00+12:00",
+      "timezone": "Pacific/Auckland"
+    },
+    "owner": {
+      "staffActorKey": "staff-amelia-jones",
+      "managerActorKey": "manager-daniel-wu",
+      "uatResponsiblePerson": "project-owner"
+    },
+    "handoff": {
+      "taskType": "accounting.quarterly_accounts.prepare",
+      "afterReadyBusinessDays": 5,
+      "requiresManagerApproval": true
+    }
+  },
+  "safetyStrata": [
+    "wrong_subject",
+    "wrong_period",
+    "unknown_type",
+    "critical_conflict",
+    "low_quality"
+  ],
+  "policy": {
+    "confidenceLevel": 0.95,
+    "minimumAutoAcceptPrecisionLowerBound": 0.95,
+    "minimumIndependentFamilies": 60,
+    "inputUsdPerMillionTokens": 5,
+    "outputUsdPerMillionTokens": 30,
+    "monthlyProviderLimitUsd": 3,
+    "applicationCircuitBreakerUsd": 2.5,
+    "reservedNextCallUsd": 0.05
+  }
+}

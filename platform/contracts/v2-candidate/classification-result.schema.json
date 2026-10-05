@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aijiaofu.example/schemas/v2-candidate/classification-result.schema.json",
+  "title": "Candidate abstaining document classification result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "predicted_document_type_code",
+    "confidence",
+    "reason",
+    "quality_flags",
+    "conflict_flags",
+    "extracted_fields",
+    "classification_outcome",
+    "abstention_reason"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0-candidate.1"
+    },
+    "predicted_document_type_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "detected_subject_references": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "maxLength": 300
+      }
+    },
+    "detected_period": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 100
+    },
+    "quality_flags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "blurry",
+          "blank",
+          "corrupt",
+          "partial",
+          "password_protected",
+          "unsupported",
+          "mime_mismatch",
+          "other"
+        ]
+      }
+    },
+    "conflict_flags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "subject_conflict",
+          "period_conflict",
+          "document_type_conflict",
+          "duplicate_suspected",
+          "other"
+        ]
+      }
+    },
+    "extracted_fields": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "evidence": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "label",
+          "value"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "value": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "classification_outcome": {
+      "enum": [
+        "classified",
+        "unknown",
+        "insufficient_evidence"
+      ]
+    },
+    "abstention_reason": {
+      "enum": [
+        null,
+        "outside_allowed_types",
+        "unreadable",
+        "incomplete",
+        "mixed_document",
+        "ambiguous"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "classification_outcome": {
+            "const": "classified"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "predicted_document_type_code": {
+            "type": "string"
+          },
+          "abstention_reason": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "predicted_document_type_code": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "classification_outcome": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "abstention_reason": {
+            "const": "outside_allowed_types"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "classification_outcome": {
+            "const": "insufficient_evidence"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "abstention_reason": {
+            "enum": [
+              "unreadable",
+              "incomplete",
+              "mixed_document",
+              "ambiguous"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

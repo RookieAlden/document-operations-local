@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
+    <title>资料运营台</title>
+    <link rel="icon" href="/ops/favicon.svg?v=20260809-m30" type="image/svg+xml">
+    <link rel="stylesheet" href="/ops/app.css?v=20260818-m45-1-demo-entry">
+    <script src="/ops/app.js?v=20260818-m45-1-demo-entry" type="module"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <main id="boot-view" class="login-layout" aria-labelledby="boot-title">
+      <section class="login-intro">
+        <div class="product-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p class="product-name">Document Operations</p>
+        <h1 id="boot-title">正在恢复<br>你的工作现场。</h1>
+        <p>正在确认本设备的安全会话并读取当前环境的运营数据。短暂冷启动会自动重试，不需要重复登录。</p>
+      </section>
+      <section class="login-panel boot-panel" aria-live="polite">
+        <p class="login-step">安全会话检查</p>
+        <h2 id="boot-status">正在连接运营台…</h2>
+        <p id="boot-message">通常只需要几秒钟。</p>
+        <button id="boot-retry" class="button button-primary" type="button" hidden>重新连接</button>
+      </section>
+    </main>
+
+    <main id="login-view" class="login-layout" aria-labelledby="login-title" hidden>
+      <section class="login-intro">
+        <div class="product-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p class="product-name">Document Operations</p>
+        <h1 id="login-title">今天的资料工作，<br>从需要判断的地方开始。</h1>
+        <p>这是纯虚构的受控环境。资料接收、原件保存和 AI 分类已经在线；运营台只显示 Canonical 数据，不读取旧 Demo。</p>
+        <dl class="login-boundaries">
+          <div><dt>环境</dt><dd id="login-environment">Synthetic only</dd></div>
+          <div><dt>外部发送</dt><dd>关闭</dd></div>
+          <div><dt>AI 决策</dt><dd>人工负责例外</dd></div>
+        </dl>
+      </section>
+      <section class="login-panel" aria-label="运营台登录">
+        <p class="login-step">受保护的运营入口</p>
+        <h2>使用获准的工作身份</h2>
+        <p>Supabase 只验证登录凭据；角色、租户边界与审计身份仍由 Canonical Actor 决定。</p>
+        <form id="login-form" novalidate>
+          <div class="login-field">
+            <label for="login-email">工作邮箱</label>
+            <input id="login-email" name="email" type="email" inputmode="email" autocomplete="username" required maxlength="254">
+          </div>
+          <div class="login-field">
+            <label for="login-password">密码</label>
+            <input id="login-password" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="1024">
+          </div>
+          <label class="login-remember" for="login-remember">
+            <input id="login-remember" name="rememberDevice" type="checkbox">
+            <span><strong>记住此设备 30 天</strong><small>仅在你个人使用的设备上启用</small></span>
+          </label>
+          <p id="login-error" class="form-error" role="alert" hidden></p>
+          <button class="button button-primary" type="submit">验证身份并进入</button>
+        </form>
+      </section>
+    </main>
+
+    <div id="app-shell" class="app-shell" hidden>
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand-row">
+          <div class="product-mark product-mark-small" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div><strong>资料运营台</strong><span id="brand-environment">受控环境 · 通用分类工作流</span></div>
+        </div>
+        <nav class="nav-list" aria-label="功能菜单">
+          <button class="nav-item is-active" type="button" data-view="today"><span>今日工作</span><output id="nav-attention-count">0</output></button>
+          <button class="nav-item" type="button" data-view="tasks"><span>任务</span><output id="nav-task-count">0</output></button>
+          <button id="trial-nav" class="nav-item" type="button" data-view="trial" hidden><span>我的试运行</span><output id="nav-trial-count">0</output></button>
+          <button class="nav-item" type="button" data-view="cases"><span>全部 Case</span><output id="nav-case-count">0</output></button>
+          <button class="nav-item" type="button" data-view="review"><span>人工复核</span><output id="nav-review-count">0</output></button>
+          <button class="nav-item" type="button" data-view="system"><span>系统状态</span><span class="nav-signal"><span class="health-dot" aria-label="系统正常"></span><output id="nav-system-count">0</output></span></button>
+          <button id="onboarding-nav" class="nav-item" type="button" data-view="onboarding" hidden><span>工作对象开户</span><output id="nav-onboarding-count">0</output></button>
+          <button id="work-packages-nav" class="nav-item" type="button" data-view="work-packages" hidden><span>Work Package</span><output id="nav-work-packages-count">0</output></button>
+          <button id="source-connectors-nav" class="nav-item" type="button" data-view="source-connectors" hidden><span>资料来源</span><output id="nav-source-connectors-count">0</output></button>
+          <button id="classification-profile-nav" class="nav-item" type="button" data-view="classification-profile" hidden><span>分类体系</span><output id="nav-classification-profile-count">0</output></button>
+          <button id="classifier-releases-nav" class="nav-item" type="button" data-view="classifier-releases" hidden><span>模型发布</span><output id="nav-classifier-releases-count">0</output></button>
+          <button id="configuration-nav" class="nav-item" type="button" data-view="configuration" hidden><span>客户与配置</span><output id="nav-configuration-count">0</output></button>
+          <button id="case-plans-nav" class="nav-item" type="button" data-view="case-plans" hidden><span>Case 计划</span><output id="nav-case-plans-count">0</output></button>
+          <button id="release-readiness-nav" class="nav-item" type="button" data-view="release-readiness" hidden><span>发布准备</span><output id="nav-release-readiness-count">0</output></button>
+          <button id="retention-nav" class="nav-item" type="button" data-view="retention" hidden><span>数据生命周期</span><output id="nav-retention-count">0</output></button>
+          <button id="demo-form-nav" class="nav-item" type="button" data-view="demo-form" hidden><span>销售演示入口</span><output id="nav-demo-form-count">0</output></button>
+          <button id="access-nav" class="nav-item" type="button" data-view="access" hidden><span>人员与访问</span><output id="nav-access-count">0</output></button>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="sidebar-note">
+            <span>数据边界</span>
+            <strong>仅纯虚构资料</strong>
+            <p>真实客户资料尚未获准进入此环境。</p>
+          </div>
+          <div class="operator-note">
+            <span>当前操作者</span>
+            <strong id="operator-name">正在确认…</strong>
+          </div>
+          <button id="logout-button" class="text-button" type="button">退出运营台</button>
+        </div>
+      </aside>
+
+      <main id="main-content" class="workspace" tabindex="-1">
+        <header class="workspace-header">
+          <div>
+            <p id="view-context">正在确认运行环境…</p>
+            <h1 id="view-title">今日工作</h1>
+            <p id="view-description">先处理阻断、逾期和需要人工判断的资料。</p>
+          </div>
+          <div class="header-actions">
+            <span id="last-updated" class="last-updated">尚未刷新</span>
+            <button id="refresh-button" class="button button-secondary" type="button">刷新数据</button>
+          </div>
+        </header>
+
+        <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+        <section id="loading-state" class="loading-state" aria-label="正在加载">
+          <div class="skeleton skeleton-wide"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <span class="sr-only">正在读取运营数据</span>
+        </section>
+
+        <section id="today-view" class="view" aria-labelledby="view-title" hidden>
+          <div id="attention-summary" class="attention-summary"></div>
+          <section class="work-section" aria-labelledby="priority-title">
+            <div class="section-heading">
+              <div><h2 id="priority-title">优先 Case</h2><p>按阻断、逾期、临近截止和到期时间排序。</p></div>
+              <button class="text-button view-link" type="button" data-go-view="cases">查看全部</button>
+            </div>
+            <div id="priority-cases"></div>
+          </section>
+          <div class="two-column-flow">
+            <section class="work-section" aria-labelledby="today-review-title">
+              <div class="section-heading"><div><h2 id="today-review-title">待人工判断</h2><p>AI 结果和异常原因放在同一行。</p></div><button class="text-button view-link" type="button" data-go-view="review">进入队列</button></div>
+              <div id="today-review-list"></div>
+            </section>
+            <section class="work-section" aria-labelledby="issue-title">
+              <div class="section-heading"><div><h2 id="issue-title">问题流转</h2><p>分派、等待、解决与主管重新打开都保留记录。</p></div></div>
+              <div id="issue-batch-actions"></div>
+              <div id="issue-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="tasks-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="task-boundary">
+            <div><strong>任务是 Case 完成后的可追责工作</strong><p>领取、开始、等待、恢复和完成由负责人操作；改派与重开只允许主管或管理员。每次变化都会追加不可变审计记录。</p></div>
+            <span>内部执行 · 不外发</span>
+          </div>
+          <div class="task-filter-bar" aria-label="任务筛选">
+            <label><span>范围</span><select id="task-scope-filter"><option value="mine">我的任务</option><option value="team">团队任务</option></select></label>
+            <label><span>状态</span><select id="task-status-filter"><option value="active">未完成</option><option value="all">全部状态</option><option value="open">开放</option><option value="in_progress">处理中</option><option value="waiting">等待中</option><option value="completed">已完成</option></select></label>
+            <label><span>期限</span><select id="task-due-filter"><option value="all">全部期限</option><option value="overdue">已逾期</option><option value="due_soon">7天内到期</option><option value="no_due">未设置期限</option></select></label>
+          </div>
+          <div id="task-summary" class="task-summary" aria-live="polite"></div>
+          <section class="work-section" aria-labelledby="task-list-title">
+            <div class="section-heading"><div><h2 id="task-list-title">任务队列</h2><p>任务状态、负责人、期限和来源 Case 保持在同一工作面。</p></div></div>
+            <div id="task-list" aria-live="polite"></div>
+          </section>
+          <section class="work-section" aria-labelledby="task-history-title">
+            <div class="section-heading"><div><h2 id="task-history-title">最近任务审计</h2><p>显示操作者、前后状态、负责人变化、理由和关联事件。</p></div></div>
+            <div id="task-history" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section id="trial-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="trial-boundary">
+            <div><strong>从这里开始一轮完整的个人验收</strong><p>选择一份已发布配置建立干净 Case，再进入 Case 上传纯虚构资料。原件先保存，随后才进入 AI 分类。</p></div>
+            <span>仅 DEV · 不外发</span>
+          </div>
+          <section class="work-section" aria-labelledby="trial-create-title">
+            <div class="section-heading"><div><h2 id="trial-create-title">新建试运行 Case</h2><p>沿用版本化资料要求，不复制历史回归文件或问题。</p></div></div>
+            <form id="trial-form" class="trial-form">
+              <label class="trial-wide"><span>已发布配置</span><select id="trial-configuration" name="releaseId" required></select></label>
+              <label><span>期间键</span><input id="trial-period-key" name="periodKey" required maxlength="80" pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,79}"></label>
+              <label><span>期间开始</span><input id="trial-period-start" name="periodStart" type="date" required></label>
+              <label><span>期间结束</span><input id="trial-period-end" name="periodEnd" type="date" required></label>
+              <label><span>截止时间</span><input id="trial-due-at" name="dueAt" type="datetime-local" required></label>
+              <label><span>时区</span><input name="timezone" value="Pacific/Auckland" required maxlength="80"></label>
+              <label class="trial-wide"><span>创建理由</span><textarea name="reason" required minlength="12" maxlength="1000" rows="2">建立一轮由项目负责人亲自完成的纯虚构资料验收。</textarea></label>
+              <div class="trial-actions"><button class="button button-primary-inline" type="submit">创建并进入 Case</button><span>不创建客户入口 · 不发送邮件 · 不创建 UAT</span></div>
+            </form>
+          </section>
+          <section class="work-section" aria-labelledby="trial-recent-title">
+            <div class="section-heading"><div><h2 id="trial-recent-title">继续现有 Case</h2><p>也可以直接选择一个未完成 Case 上传或补交纯虚构资料。</p></div></div>
+            <div id="trial-case-list" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section id="cases-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="filter-bar">
+            <label for="case-search">查找客户或期间</label>
+            <input id="case-search" type="search" placeholder="例如 Kauri Coast 或 2026-07" autocomplete="off">
+            <label for="case-status-filter">状态</label>
+            <select id="case-status-filter">
+              <option value="all">全部状态</option>
+              <option value="attention">需要关注</option>
+              <option value="waiting_for_documents">等待资料</option>
+              <option value="review_required">需要复核</option>
+              <option value="ready">已齐备</option>
+              <option value="completed">已完成</option>
+            </select>
+          </div>
+          <div id="cases-table-region" class="table-region" aria-live="polite"></div>
+          <section class="work-section" aria-labelledby="recent-documents-title">
+            <div class="section-heading"><div><h2 id="recent-documents-title">最近资料</h2><p>原件链接按需签发，60 秒后失效。</p></div></div>
+            <div id="recent-documents-list"></div>
+          </section>
+        </section>
+
+        <section id="case-detail-view" class="view" aria-labelledby="view-title" hidden>
+          <button id="case-detail-back" class="text-button detail-back" type="button">← 返回全部 Case</button>
+          <div id="case-detail-content" aria-live="polite"></div>
+        </section>
+
+        <section id="review-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="review-intro"><p>请根据文件证据作出判断。每个决定都会记录操作者、理由、前后分类、关联问题和不可变业务事件。</p></div>
+          <div id="review-queue"></div>
+          <section class="work-section decision-history" aria-labelledby="decision-history-title">
+            <div class="section-heading"><div><h2 id="decision-history-title">最近人工决定</h2><p>保留原决定；主管可以把已确认资料重新送回队列。</p></div></div>
+            <div id="decision-history-list"></div>
+          </section>
+        </section>
+
+        <section id="system-view" class="view" aria-labelledby="view-title" hidden>
+          <div id="system-status" class="system-status"></div>
+          <section class="work-section session-management" aria-labelledby="session-management-title">
+            <div class="session-boundary">
+              <strong>会话原始 Token 始终不可见</strong>
+              <p>这里只显示活动时间和会话类型。撤销后该设备必须重新登录；当前设备不会被“撤销其他设备”影响。</p>
+            </div>
+            <div class="section-heading session-heading">
+              <div><h2 id="session-management-title">会话与设备</h2><p id="session-scope-copy">读取当前操作者的活动及近期已结束会话。</p></div>
+            </div>
+            <form id="session-revoke-others-form" class="session-bulk-form">
+              <label><span>撤销理由</span><input name="reason" required minlength="12" maxlength="1000" value="撤销当前个人设备之外的全部活动会话。"></label>
+              <button class="button button-secondary" type="submit">撤销我的其他设备</button>
+            </form>
+            <div id="session-list" aria-live="polite"></div>
+            <form id="session-cleanup-form" class="session-cleanup" hidden>
+              <div>
+                <strong>已结束会话保留策略</strong>
+                <p>只清理已撤销或已过期并超过保留期的记录，活动会话永不进入清理候选。</p>
+              </div>
+              <label><span>保留天数</span><input name="retentionDays" type="number" min="30" max="365" step="1" value="90" required></label>
+              <label><span>清理理由</span><input name="reason" minlength="12" maxlength="1000" value="按会话保留策略清理超过九十天的已结束记录。"></label>
+              <div class="session-cleanup-actions">
+                <button class="button button-quiet" type="submit" name="action" value="dry_run">预览候选</button>
+                <button class="button button-secondary" type="submit" name="action" value="apply">清理已结束记录</button>
+              </div>
+              <output id="session-cleanup-result" aria-live="polite"></output>
+            </form>
+          </section>
+          <section class="work-section" aria-labelledby="retry-queue-title">
+            <div class="section-heading"><div><h2 id="retry-queue-title">重试与失败队列</h2><p>来自 Canonical Workflow Error；只显示安全错误码，容器日志仍保留在 Railway。</p></div></div>
+            <div id="retry-queue"></div>
+          </section>
+          <section class="work-section" aria-labelledby="activity-title">
+            <div class="section-heading"><div><h2 id="activity-title">最近业务事件</h2><p>来自 Canonical Workflow Event，不是容器日志。</p></div></div>
+            <div id="activity-list"></div>
+          </section>
+        </section>
+
+        <section id="release-readiness-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="release-boundary">
+            <strong>准备证据，不是部署许可</strong>
+            <p>这里固定 DEV→UAT 的组件版本、前置审批与回滚指针。创建、评估或批准 Manifest 都不会创建 UAT 环境、读取密钥值、启用外部入口、启动运行任务或发送消息。</p>
+          </div>
+          <section id="uat-current-authorization" class="uat-authorization-summary" aria-labelledby="uat-current-authorization-title" hidden>
+            <div class="section-heading"><div><h2 id="uat-current-authorization-title">M39 当前 UAT 授权边界</h2><p>预算批准与资源创建批准分开显示；只有后者为 true 才可能进入 M40 执行。</p></div></div>
+            <div id="uat-current-authorization-content" aria-live="polite"></div>
+          </section>
+          <div id="release-readiness-readonly" class="configuration-readonly" hidden>主管可以复核、重新评估并作出独立决定；只有管理员可以冻结新 Manifest 或提交审批。</div>
+          <section id="release-manifest-create-section" class="work-section" aria-labelledby="release-manifest-create-title">
+            <div class="section-heading"><div><h2 id="release-manifest-create-title">冻结发布候选</h2><p>引用审批记录与密钥位置，不粘贴密钥值。尚未批准的前置项会使准备检查明确阻断。</p></div></div>
+            <form id="release-manifest-form" class="release-manifest-form">
+              <label><span>Manifest 键</span><input name="manifestKey" value="dev-to-uat" required minlength="3" maxlength="120" pattern="[a-z0-9][a-z0-9._-]{2,119}"></label>
+              <fieldset><legend>固定运行边界</legend><dl class="release-invariants"><div><dt>路径</dt><dd>DEV → UAT</dd></div><div><dt>目标环境</dt><dd>未创建</dd></div><div><dt>数据</dt><dd>仅纯虚构</dd></div><div><dt>运行与外发</dt><dd>全部关闭</dd></div></dl></fieldset>
+              <div class="release-approval-grid">
+                <label><span>数据区域</span><select name="dataRegionStatus"><option value="pending">待批准</option><option value="approved">已批准</option></select><input name="dataRegionReference" placeholder="decision://data-region/..." maxlength="300"></label>
+                <label><span>隐私与保留</span><select name="privacyRetentionStatus"><option value="pending">待批准</option><option value="approved">已批准</option></select><input name="privacyRetentionReference" placeholder="decision://privacy/..." maxlength="300"></label>
+                <label><span>预算</span><select name="budgetStatus"><option value="pending">待批准</option><option value="approved">已批准</option></select><input name="budgetReference" placeholder="decision://budget/..." maxlength="300"><input name="monthlyLimitUsd" type="number" min="0" max="0" step="0.01" value="0" readonly aria-label="每月预算上限（美元）"><small>当前UAT额外预算固定为$0；任何正数需首个客户确认后重新审批。</small></label>
+                <label><span>共享邮箱</span><select name="sharedMailboxStatus"><option value="not_required">当前不需要</option><option value="pending">待批准</option><option value="approved">已批准</option></select><input name="sharedMailboxReference" placeholder="decision://mailbox/..." maxlength="300"></label>
+              </div>
+              <label><span>密钥引用（每行一个）</span><textarea name="secretReferences" rows="3" maxlength="6000" placeholder="keychain://OPENAI_API_KEY_DEV"></textarea><small>只允许位置引用；不要输入 API Key、密码或 Token。</small></label>
+              <label><span>冻结理由</span><textarea name="reason" required minlength="12" maxlength="1000" rows="3" placeholder="说明为何固定这一组版本与准备声明。"></textarea></label>
+              <div class="release-form-actions"><button class="button button-primary-inline" type="submit">冻结 Manifest 草稿</button><span>不部署 · 不创建环境 · 不外发</span></div>
+            </form>
+          </section>
+          <section class="work-section" aria-labelledby="release-manifest-list-title">
+            <div class="section-heading"><div><h2 id="release-manifest-list-title">Manifest 登记簿</h2><p>每个版本同时固定组件与声明哈希；漂移会阻止提交或批准。</p></div></div>
+            <div id="release-manifest-list" class="release-manifest-list" aria-live="polite"></div>
+          </section>
+          <section class="work-section uat-blueprint-section" aria-labelledby="uat-blueprint-title">
+            <div class="section-heading"><div><h2 id="uat-blueprint-title">UAT 环境蓝图</h2><p>把拓扑、变量目录、迁移、验收与回滚写成可审计计划；dry-run 只列出阻断，不执行任何步骤。</p></div></div>
+            <div id="uat-blueprint-gate" class="uat-blueprint-safety"><strong>读取当前 UAT 授权中</strong><span>环境与 Provider 事实将从数据库证据加载</span></div>
+            <form id="uat-blueprint-form" class="release-manifest-form uat-blueprint-form">
+              <label><span>蓝图键</span><input name="blueprintKey" value="uat-isolated" required minlength="3" maxlength="120" pattern="[a-z0-9][a-z0-9._-]{2,119}"></label>
+              <label><span>Release Manifest</span><select id="uat-release-manifest" name="releaseManifestId"><option value="">暂不绑定（dry-run 将阻断）</option></select><small>只有已批准且无漂移的 Manifest 才能通过 dry-run。</small></label>
+              <fieldset><legend>不可变安全边界</legend><dl class="release-invariants"><div><dt>模式</dt><dd>仅 dry-run</dd></div><div><dt>拓扑</dt><dd>隔离的 3 服务</dd></div><div><dt>数据复制</dt><dd>无</dd></div><div><dt>入口与运行</dt><dd>关闭</dd></div></dl></fieldset>
+              <div class="release-approval-grid">
+                <label><span>UAT 数据区域</span><select name="uatDataRegionStatus"><option value="approved" selected>已批准</option></select><input name="uatRegion" value="Sydney" readonly aria-label="UAT 数据区域"><input name="uatDataRegionReference" value="decision://uat/region/sydney" maxlength="300"></label>
+                <label><span>隐私与保留</span><select name="uatPrivacyRetentionStatus"><option value="approved" selected>已批准</option></select><input name="uatRetentionDays" type="number" value="30" readonly aria-label="UAT 资料保留天数"><input name="uatPrivacyRetentionReference" value="decision://uat/retention/30-days-real-data-reapproval" maxlength="300"><small>仅纯虚构资料；真实客户资料进入前必须重新审批。</small></label>
+                <label><span>UAT 额外月度预算</span><select name="uatBudgetStatus"><option value="approved" selected>已批准</option></select><input name="uatBudgetReference" value="decision://uat/budget/zero-paid-resources-prohibited" maxlength="300"><input name="uatMonthlyLimitUsd" type="number" min="0" max="0" step="0.01" value="0" readonly aria-label="UAT 每月预算上限（美元）"><small>$0 表示禁止创建、启动或升级任何付费 UAT 资源。</small></label>
+                <label><span>运行责任人</span><select name="uatRuntimeOwnerStatus"><option value="approved" selected>已指定</option></select><input id="uat-runtime-owner-display" value="当前管理员" readonly aria-label="UAT 运行责任人"><input name="uatRuntimeOwnerReference" value="decision://uat/runtime-owner/project-owner" maxlength="300"><small>保存时由当前登录管理员身份强制绑定。</small></label>
+              </div>
+              <label><span>变量名目录（每行一个）</span><textarea name="variableNames" rows="6" maxlength="4000" spellcheck="false">DOP_ENVIRONMENT
+DOP_ORGANIZATION_KEY
+DATABASE_URL
+OPENAI_API_KEY
+DOP_OPS_SESSION_SECRET</textarea><small>只登记变量名，不保存值。</small></label>
+              <label><span>Secret 引用（VARIABLE=scheme://location）</span><textarea name="uatSecretReferences" rows="4" maxlength="6000" spellcheck="false" placeholder="DATABASE_URL=vault://uat/database-url"></textarea><small>不得粘贴 API Key、密码、Token 或连接串。</small></label>
+              <label><span>编制理由</span><textarea name="reason" required minlength="12" maxlength="1000" rows="3" placeholder="说明为什么建立或修订这份 UAT 蓝图。"></textarea></label>
+              <div class="release-form-actions"><button class="button button-primary-inline" type="submit">保存不可执行蓝图</button><span>只写计划 · 不创建环境</span></div>
+            </form>
+            <div id="uat-blueprint-readonly" class="configuration-readonly" hidden>主管可以查看蓝图和运行 dry-run；只有管理员可以保存新版本。</div>
+            <div id="uat-blueprint-list" class="release-manifest-list" aria-live="polite"></div>
+            <div class="section-heading uat-package-heading"><div><h3>UAT Provisioning Package</h3><p>从通过检查的蓝图编译资源清单、迁移顺序、30 天清理合同、验收和回滚手册；当前结果必须保持 NO-GO。</p></div></div>
+            <div id="uat-package-gate" class="uat-blueprint-safety uat-package-gate"><strong>执行决定：NO-GO</strong><span>当前预算与创建授权将从数据库证据加载</span></div>
+            <div id="uat-provisioning-package-list" class="release-manifest-list" aria-live="polite"></div>
+            <div class="section-heading uat-package-heading"><div><h3>UAT 激活审批包</h3><p>集中登记首次客户确认、正数预算与 Provider 估算、资料范围和执行窗口。审批齐全也只进入最终授权申请，不会直接部署。</p></div></div>
+            <div id="uat-approval-gate" class="uat-blueprint-safety uat-approval-gate"><strong>当前门禁：NO-GO</strong><span>剩余阻断将从最新授权申请加载</span></div>
+            <div id="uat-activation-approval-list" class="release-manifest-list" aria-live="polite"></div>
+            <div class="section-heading uat-package-heading"><div><h3>最终授权申请草稿</h3><p>把审批快照、M33→拟议状态差异、10步变更集和回滚边界冻结为申请材料。当前不能提交、不能批准、不能执行。</p></div></div>
+            <div class="uat-blueprint-safety uat-final-gate"><strong>申请状态：未提交</strong><span>执行器不存在 · 10 步 disabled · 授权 false · Provider 调用 0</span></div>
+            <div id="uat-final-authorization-list" class="release-manifest-list" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section id="onboarding-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="onboarding-boundary">
+            <strong>一次开户，只建立可审阅的起点</strong>
+            <p>管理员从版本化工作包创建工作对象、专属资料要求集和第一份配置草稿。不会自动发布、创建 Case、创建登录身份或发送外部消息。</p>
+          </div>
+          <section class="work-section" aria-labelledby="onboarding-packages-title">
+            <div class="section-heading"><div><h2 id="onboarding-packages-title">可用工作包</h2><p>会计只是首批示例；工作包、工作流与资料分类规则都可独立版本化。</p></div></div>
+            <div id="onboarding-packages" class="onboarding-package-list" aria-live="polite"></div>
+          </section>
+          <section class="work-section" aria-labelledby="onboarding-form-title">
+            <div class="section-heading"><div><h2 id="onboarding-form-title">建立工作对象</h2><p>当前 DEV 只允许纯虚构资料。完成后请到“客户与配置”复核并发布。</p></div></div>
+            <form id="onboarding-form" class="onboarding-form">
+              <div class="onboarding-field onboarding-field-wide"><label for="onboarding-package">工作包版本</label><select id="onboarding-package" name="packageVersionId" required></select></div>
+              <div class="onboarding-field"><label for="onboarding-key">对象键</label><input id="onboarding-key" name="subjectKey" required minlength="3" maxlength="80" pattern="[a-z0-9][a-z0-9-]{2,79}" placeholder="例如 m15-rimu-design"></div>
+              <div class="onboarding-field"><label for="onboarding-name">显示名称</label><input id="onboarding-name" name="displayName" required minlength="2" maxlength="160" placeholder="纯虚构对象名称"></div>
+              <div class="onboarding-field"><label for="onboarding-type">对象类型</label><input id="onboarding-type" name="subjectType" required minlength="2" maxlength="80" value="accounting_client"></div>
+              <div class="onboarding-field"><label for="onboarding-contact">主要联系人</label><select id="onboarding-contact" name="primaryContactActorId"><option value="">暂不设置</option></select></div>
+              <div class="onboarding-field onboarding-field-wide"><label for="onboarding-attributes">对象属性 JSON</label><textarea id="onboarding-attributes" name="attributes" required rows="5" spellcheck="false">{
+  "synthetic": true
+}</textarea><span>DEV 的 synthetic 标记由工作包锁定为 true。</span></div>
+              <div class="onboarding-field onboarding-field-wide"><label for="onboarding-reason">开户理由</label><textarea id="onboarding-reason" name="reason" required minlength="12" maxlength="1000" rows="3" placeholder="说明为何建立这个纯虚构工作对象；内容进入永久审计记录。"></textarea></div>
+              <div class="onboarding-actions"><button class="button button-primary-inline" type="submit">创建对象与配置草稿</button><span>不发布 · 不创建 Case · 不发送</span></div>
+            </form>
+          </section>
+          <section class="work-section" aria-labelledby="recent-onboardings-title">
+            <div class="section-heading"><div><h2 id="recent-onboardings-title">最近开户</h2><p>每次操作固定工作包版本、配置草稿和审计事件。</p></div></div>
+            <div id="recent-onboardings"></div>
+          </section>
+        </section>
+
+        <section id="configuration-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="configuration-boundary">
+            <strong>发布改变未来，不改写过去</strong>
+            <p>每次保存、送审与发布都会新增一个版本记录。已有 Case 继续使用创建时固定的配置；回滚会生成新草稿，不覆盖历史发布版。</p>
+          </div>
+          <div id="configuration-readonly" class="configuration-readonly" hidden>主管可以查看差异与校验结果；只有管理员可以创建、修改或发布配置。</div>
+          <div id="configuration-list" aria-live="polite"></div>
+        </section>
+
+        <section id="classification-profile-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="classification-boundary">
+            <strong>先定义共同语言，再让模型判断</strong>
+            <p>标签、抽取字段、判断阈值和人工复核规则作为一个整体版本发布。未知类别或歧义固定进入人工复核；当前定义未通过全部虚构评估时，不能送审或发布。</p>
+          </div>
+          <div id="classification-profile-readonly" class="configuration-readonly" hidden>主管可以查看版本、差异与评估证据；只有管理员可以编制、运行评估、送审或发布分类体系。</div>
+          <section class="work-section" aria-labelledby="classification-profile-versions-title">
+            <div class="section-heading"><div><h2 id="classification-profile-versions-title">分类体系版本</h2><p>每次保存都追加修订；发布只影响未来分类，历史分类尝试继续保留当时的准确版本与哈希。</p></div></div>
+            <div id="classification-profile-version-list" aria-live="polite"></div>
+          </section>
+          <section class="work-section" aria-labelledby="classification-profile-evaluations-title">
+            <div class="section-heading"><div><h2 id="classification-profile-evaluations-title">最近政策评估</h2><p>只运行确定性规则，不调用模型、不创建资料、不发外部消息。</p></div></div>
+            <div id="classification-profile-evaluation-list" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section id="classifier-releases-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="classifier-release-boundary">
+            <strong>一次发布，固定完整判断边界</strong>
+            <p>Prompt、模型、严格输出 Schema 与准确分类体系一起发布。兼容性检查和真实模型虚构资料评估都通过后才能送审；新版本只用于未来 Case，历史 Case 不被改写。</p>
+          </div>
+          <div id="classifier-releases-readonly" class="configuration-readonly" hidden>主管可以查看版本、差异和模型评估证据；只有管理员可以编制、评估、送审或发布。</div>
+          <section class="work-section" aria-labelledby="classifier-release-versions-title">
+            <div class="section-heading"><div><h2 id="classifier-release-versions-title">分类器发布版本</h2><p>运行时从 Case 固定的发布版读取 Prompt、模型、Schema 和分类体系，不跟随后续变更。</p></div></div>
+            <div id="classifier-release-version-list" aria-live="polite"></div>
+          </section>
+          <section class="work-section" aria-labelledby="classifier-release-evaluations-title">
+            <div class="section-heading"><div><h2 id="classifier-release-evaluations-title">发布评估证据</h2><p>兼容性检查不调用模型；模型评估只使用内置纯虚构文本，不创建 Document、不发外部消息。</p></div></div>
+            <div id="classifier-release-evaluation-list" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section id="source-connectors-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="source-connector-boundary">
+            <strong>登记启用不等于接通外部系统</strong>
+            <p>七类来源共用 Adapter Contract：先用纯虚构样例离线重放为 Canonical Envelope，再治理能力、文件数量/大小/MIME、凭证引用与审批。runtime execution 和外部发送继续固定关闭。</p>
+          </div>
+          <div id="source-connectors-readonly" class="configuration-readonly" hidden>主管可以查看定义、引用和测试证据；只有管理员可以登记、修订、测试、审批、暂停或撤销。</div>
+          <section id="source-connector-create-section" class="work-section" aria-labelledby="source-connector-create-title">
+            <div class="section-heading"><div><h2 id="source-connector-create-title">登记资料来源</h2><p>使用逻辑绑定键和 Secret Reference，不保存 Token、密码或供应商专有业务 ID。</p></div></div>
+            <form id="source-connector-create-form" class="source-connector-form">
+              <div class="source-connector-grid">
+                <label><span>连接器键</span><input name="connectorKey" required minlength="3" maxlength="120" pattern="[a-z0-9][a-z0-9._-]{2,119}" placeholder="例如 claim.email.intake"></label>
+                <label><span>名称</span><input name="displayName" required minlength="2" maxlength="160" placeholder="例如 理赔邮箱入口"></label>
+                <label><span>类型</span><select name="connectorType"><option value="manual_upload">人工上传</option><option value="form">表单</option><option value="email">邮箱</option><option value="sharepoint">SharePoint</option><option value="api">API</option><option value="sftp">SFTP</option><option value="object_storage">对象存储</option></select></label>
+                <label><span>传输方式</span><select name="transport"><option value="operator">人工</option><option value="push">推送</option><option value="pull">拉取</option></select></label>
+                <label><span>凭证提供方</span><select name="credentialProvider"><option value="none">无需凭证</option><option value="railway">Railway Secret</option><option value="supabase">Supabase Secret</option><option value="external_vault">外部 Vault</option></select></label>
+                <label><span>Secret Reference</span><input name="credentialReference" maxlength="255" placeholder="railway://secret/DOP_CONNECTOR_TOKEN"></label>
+                <label class="source-connector-wide"><span>能力（逗号分隔）</span><input name="capabilities" value="documents,metadata" required></label>
+                <label><span>每次最多文件</span><input name="maxFilesPerSubmission" type="number" value="20" min="1" max="100" required></label>
+                <label class="source-connector-wide"><span>允许 MIME（逗号分隔）</span><input name="allowedMimeTypes" value="application/pdf,image/jpeg,image/png,text/plain" required></label>
+                <label class="source-connector-wide"><span>用途说明</span><textarea name="description" required minlength="12" maxlength="1000" rows="3" placeholder="说明入口适用的资料任务和边界。"></textarea></label>
+                <label><span>虚构样例键</span><input name="fixtureKey" value="baseline.synthetic" required></label>
+                <label><span>虚构文件名</span><input name="fixtureFilename" value="synthetic-source-document.pdf" required></label>
+                <label class="source-connector-wide"><span>虚构样例说明</span><textarea name="fixtureSummary" required minlength="20" maxlength="1000" rows="2">Purely synthetic DEV fixture for validating the connector contract without network access.</textarea></label>
+                <label class="source-connector-wide"><span>登记理由</span><textarea name="reason" required minlength="12" maxlength="1000" rows="2" placeholder="说明为什么需要登记此资料来源。"></textarea></label>
+              </div>
+              <div class="configuration-form-actions"><button class="button button-primary-inline" type="submit">建立连接器草稿</button><span>不解析凭证 · 不联网 · 不接收资料</span></div>
+            </form>
+          </section>
+          <section class="work-section" aria-labelledby="source-connector-version-title">
+            <div class="section-heading"><div><h2 id="source-connector-version-title">连接器目录</h2><p>每次状态变化都追加修订；归一化执行策略不会改写历史 Definition/hash。</p></div></div>
+            <div id="source-connector-version-list" aria-live="polite"></div>
+          </section>
+          <section class="work-section" aria-labelledby="source-connector-tests-title">
+            <div class="section-heading"><div><h2 id="source-connector-tests-title">最近 Adapter 重放</h2><p>确定性转换纯虚构样例并保存 Canonical/Envelope 哈希；外部调用、凭证解析和 Document 写入均为 0。</p></div></div>
+            <div id="source-connector-test-list" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section id="work-packages-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="work-package-boundary">
+            <strong>先用虚构样本证明，再允许发布</strong>
+            <p>工作包定义工作对象默认值、工作流和资料要求。每次编辑、送审、发布与停用都追加记录；没有通过当前定义的虚构 dry-run，就不能进入复核或发布。</p>
+          </div>
+          <div id="work-package-readonly" class="configuration-readonly" hidden>主管可以查看版本、差异与 dry-run 证据；只有管理员可以编制、送审、发布或停用工作包。</div>
+          <section id="work-package-create-section" class="work-section" aria-labelledby="work-package-create-title">
+            <div class="section-heading"><div><h2 id="work-package-create-title">建立工作包草稿</h2><p>使用结构化字段编制，不在数据库外拼装 JSON；DEV 安全边界固定开启。</p></div></div>
+            <form id="work-package-create-form" class="work-package-form">
+              <div class="work-package-field"><label for="work-package-key">工作包键</label><input id="work-package-key" name="packageKey" required minlength="3" maxlength="120" pattern="[a-z0-9][a-z0-9._-]{2,119}" placeholder="例如 legal.contract.intake"></div>
+              <div class="work-package-field"><label for="work-package-name">名称</label><input id="work-package-name" name="displayName" required minlength="2" maxlength="160" placeholder="例如 合同材料基础包"></div>
+              <div class="work-package-field"><label for="work-package-industry">分类域</label><input id="work-package-industry" name="industryPackage" maxlength="120" placeholder="例如 legal；可留空"></div>
+              <div class="work-package-field work-package-field-wide"><label for="work-package-description">用途说明</label><textarea id="work-package-description" name="description" required minlength="12" maxlength="1000" rows="3" placeholder="说明这个工作包适合哪类资料任务，以及不适合什么。"></textarea></div>
+              <div class="work-package-field"><label for="work-package-workflow">工作流模板</label><select id="work-package-workflow" name="workflowTemplateId" required></select></div>
+              <div class="work-package-field"><label for="work-package-frequency">处理频率</label><input id="work-package-frequency" name="frequency" required minlength="2" maxlength="80" value="monthly" placeholder="monthly / quarterly / event_based"></div>
+              <div class="work-package-field"><label for="work-package-subject-status">对象默认状态</label><select id="work-package-subject-status" name="subjectStatus"><option value="active">启用</option><option value="paused">暂停</option></select></div>
+              <div class="work-package-locks work-package-field-wide" aria-label="固定安全边界"><span>环境 DEV</span><span>仅 synthetic</span><span>外部消息需批准</span><span>收件人仅 allowlist</span></div>
+              <fieldset class="work-package-requirements work-package-field-wide"><legend>资料要求</legend><p>每种资料类型最多出现一次；数量与验收说明会进入未来对象的固定配置。</p><div id="work-package-create-requirements"></div><button class="button button-secondary button-small" type="button" data-add-work-package-requirement="create">添加资料要求</button></fieldset>
+              <div class="work-package-field work-package-field-wide"><label for="work-package-create-reason">建立理由</label><textarea id="work-package-create-reason" name="reason" required minlength="12" maxlength="1000" rows="3" placeholder="说明为什么需要这个新的通用工作包。"></textarea></div>
+              <div class="work-package-actions"><button class="button button-primary-inline" type="submit">创建草稿</button><span>不发布 · 不开户 · 不创建 Case · 不外发</span></div>
+            </form>
+          </section>
+          <section class="work-section" aria-labelledby="work-package-versions-title">
+            <div class="section-heading"><div><h2 id="work-package-versions-title">工作包版本</h2><p>当前发布版是开户唯一入口；草稿差异、dry-run 和复核状态紧邻定义显示。</p></div></div>
+            <div id="work-package-version-list" aria-live="polite"></div>
+          </section>
+          <section class="work-section" aria-labelledby="work-package-dry-run-title">
+            <div class="section-heading"><div><h2 id="work-package-dry-run-title">最近 dry-run</h2><p>只生成校验结果，不持久化工作对象、配置或 Case。</p></div></div>
+            <div id="work-package-dry-run-list" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section id="case-plans-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="case-plan-boundary">
+            <strong>先预览，再批准；批准的内容不可变</strong>
+            <p>计划只计算未来期间、截止规则和资料来源绑定。只有主管或管理员明确批准一个固定预览后，系统才会在同一事务中创建 Case；任何配置漂移都会要求重新预览。</p>
+          </div>
+          <div id="case-plan-readonly" class="configuration-readonly" hidden>主管可以生成和批准预览；只有管理员可以创建、修改或发布计划版本。</div>
+          <section id="case-plan-create-section" class="work-section" aria-labelledby="case-plan-create-title">
+            <div class="section-heading"><div><h2 id="case-plan-create-title">建立 Case 计划</h2><p>以结构化字段定义周期、期间算法、截止规则和资料来源；外部发送固定关闭。</p></div></div>
+            <form id="case-plan-create-form" class="case-plan-form">
+              <div class="case-plan-field case-plan-field-wide"><label for="case-plan-subject">工作对象与当前配置</label><select id="case-plan-subject" name="subjectId" required></select></div>
+              <div class="case-plan-field"><label for="case-plan-key">计划键</label><input id="case-plan-key" name="planKey" required minlength="3" maxlength="120" pattern="[a-z0-9][a-z0-9._-]{2,119}" placeholder="例如 rimu.monthly.documents"></div>
+              <div class="case-plan-field"><label for="case-plan-name">计划名称</label><input id="case-plan-name" name="displayName" required minlength="2" maxlength="160" placeholder="例如 月度资料收集"></div>
+              <div class="case-plan-field"><label for="case-plan-interval">每隔几个月</label><input id="case-plan-interval" name="intervalMonths" type="number" required min="1" max="12" value="1"></div>
+              <div class="case-plan-field"><label for="case-plan-anchor">首个期间开始</label><input id="case-plan-anchor" name="anchorDate" type="date" required></div>
+              <div class="case-plan-field"><label for="case-plan-timezone">时区</label><input id="case-plan-timezone" name="timezone" required maxlength="80" value="Pacific/Auckland"></div>
+              <div class="case-plan-field"><label for="case-plan-due-basis">截止日基准</label><select id="case-plan-due-basis" name="dueBasis"><option value="period_end">期间结束</option><option value="period_start">期间开始</option></select></div>
+              <div class="case-plan-field"><label for="case-plan-due-offset">基准后天数</label><input id="case-plan-due-offset" name="offsetDays" type="number" required min="-31" max="365" value="7"></div>
+              <div class="case-plan-field"><label for="case-plan-due-time">本地截止时间</label><input id="case-plan-due-time" name="localTime" type="time" required value="17:00"></div>
+              <div class="case-plan-field"><label for="case-plan-preview-count">默认预览数量</label><input id="case-plan-preview-count" name="defaultPreviewCount" type="number" required min="1" max="12" value="3"></div>
+              <div class="case-plan-field case-plan-field-wide"><label for="case-plan-source-connector">已启用资料来源版本</label><select id="case-plan-source-connector" name="bindingKey" required></select><span>这里只列出 Registry 当前 active 版本；保存时由数据库固定 Version ID 与 Definition Hash。</span></div>
+              <div class="case-plan-field case-plan-field-wide"><label for="case-plan-source-metadata">来源元数据 JSON</label><textarea id="case-plan-source-metadata" name="sourceMetadata" required rows="4" spellcheck="false">{
+  "synthetic": true
+}</textarea><span>这里只固定绑定说明，不会启用 Fillout、Make 或外部连接。</span></div>
+              <div class="case-plan-field case-plan-field-wide"><label for="case-plan-reason">建立理由</label><textarea id="case-plan-reason" name="reason" required minlength="12" maxlength="1000" rows="3" placeholder="说明计划周期、截止规则和资料来源的业务依据。"></textarea></div>
+              <div class="case-plan-actions"><button class="button button-primary-inline" type="submit">创建计划草稿</button><span>不创建 Case · 不外发</span></div>
+            </form>
+          </section>
+          <section class="work-section" aria-labelledby="case-plan-versions-title">
+            <div class="section-heading"><div><h2 id="case-plan-versions-title">计划版本</h2><p>保存、送审和发布均追加新修订；历史计划与已创建 Case 保持不变。</p></div></div>
+            <div id="case-plan-version-list" aria-live="polite"></div>
+          </section>
+          <section class="work-section" aria-labelledby="case-plan-previews-title">
+            <div class="section-heading"><div><h2 id="case-plan-previews-title">预览与批准</h2><p>每个预览固定计划版本、配置发布版、候选期间和资料来源绑定。</p></div></div>
+            <div id="case-plan-preview-list" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section id="retention-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="retention-boundary">
+            <div><strong>不可变审计不等于永久保留客户内容</strong><p>这里只处理纯虚构UAT。固定顺序为预览、Hold复核、批准、Storage删除、数据库去敏、最小删除证明；dry-run永远删除0。</p></div>
+          </div>
+          <section class="work-section" aria-labelledby="retention-policy-title">
+            <div class="section-heading"><div><h2 id="retention-policy-title">保留与恢复政策</h2><p>执行开关只有在管理员确认全部参数后才会开启。</p></div></div>
+            <div id="retention-policy-summary"></div>
+            <form id="retention-policy-form" class="retention-form" hidden>
+              <label><span>保留天数</span><input name="retentionDays" type="number" value="30" readonly></label>
+              <label><span>起算点</span><select name="anchor"><option value="case_terminal_at">Case完成或取消时间</option></select></label>
+              <label><span>Legal Hold批准人</span><input value="主管或管理员" readonly></label>
+              <label><span>RPO（小时）</span><input name="rpoHours" type="number" min="1" max="24" value="24" required></label>
+              <label><span>RTO（小时）</span><input name="rtoHours" type="number" min="1" max="24" value="4" required></label>
+              <label class="retention-wide"><span>确认理由</span><textarea name="reason" minlength="12" maxlength="1000" required>确认纯虚构UAT三十天保留、Legal Hold及恢复目标。</textarea></label>
+              <div class="retention-wide"><button class="button button-primary-inline" type="submit">确认政策并开启执行闸门</button></div>
+            </form>
+          </section>
+          <section class="work-section" aria-labelledby="retention-hold-title">
+            <div class="section-heading"><div><h2 id="retention-hold-title">Legal Hold</h2><p>有效Hold会在候选生成和Worker执行前双重阻断；复核日期到期只转为待复核，必须由主管或管理员明确解除。</p></div></div>
+            <form id="retention-hold-form" class="retention-form">
+              <label class="retention-wide"><span>Case</span><select name="caseId" required></select></label>
+              <label><span>动作</span><select name="action"><option value="place">设置Hold</option><option value="release">解除Hold</option></select></label>
+              <label><span>复核日期</span><input name="reviewDueAt" type="date" required></label>
+              <label class="retention-wide"><span>理由</span><textarea name="reason" minlength="12" maxlength="1000" required>保留此纯虚构Case以验证Legal Hold边界。</textarea></label>
+              <div class="retention-wide"><button class="button button-secondary" type="submit">记录Legal Hold决定</button></div>
+            </form>
+            <div id="retention-hold-list"></div>
+          </section>
+          <section class="work-section" aria-labelledby="retention-run-title">
+            <div class="section-heading"><div><h2 id="retention-run-title">候选与清理运行</h2><p>先预览；只有管理员和已确认政策才能执行。对象删除完成前数据库不会去敏。</p></div></div>
+            <form id="retention-run-form" class="retention-run-form">
+              <label><span>运行理由</span><input name="reason" minlength="12" maxlength="1000" required value="按三十天政策处理到期的纯虚构UAT资料。"></label>
+              <button class="button button-quiet" name="mode" value="dry_run" type="submit">预览候选</button>
+              <button class="button button-secondary" name="mode" value="apply" type="submit">批准执行清理</button>
+            </form>
+            <div id="retention-run-list"></div>
+          </section>
+          <section class="work-section" aria-labelledby="retention-proof-title">
+            <div class="section-heading"><div><h2 id="retention-proof-title">删除证明与恢复演练</h2><p>只保留对象ID、时间、策略版本、hash、数量和结果，不保留被删除内容。</p></div></div>
+            <div id="retention-proof-list"></div>
+            <div id="retention-drill-list"></div>
+            <div id="retention-reconciliation-list"></div>
+          </section>
+        </section>
+
+        <section id="demo-form-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="demo-form-boundary">
+            <div>
+              <strong>只允许纯虚构销售演示资料</strong>
+              <p>这里只为已有虚构 Case 生成受限 Fillout 链接。客户、Case、期间和资料边界由服务端锁定；表单隐藏字段无权更改。</p>
+            </div>
+            <span>不接收真实资料 · 不外发邮件 · 不进入 PROD</span>
+          </div>
+          <section class="work-section" aria-labelledby="demo-form-create-title">
+            <div class="section-heading"><div><h2 id="demo-form-create-title">生成一次性演示链接</h2><p>链接只显示一次，可用于首次上传和原 Case 补交。</p></div></div>
+            <form id="demo-form-invitation-form" class="demo-form-invitation-form">
+              <label class="demo-form-wide"><span>纯虚构 Case</span><select name="caseId" required></select></label>
+              <label><span>有效天数</span><input name="validDays" type="number" min="1" max="30" step="1" value="7" required></label>
+              <label><span>最多提交次数</span><input name="maximumSubmissions" type="number" min="2" max="20" step="1" value="6" required></label>
+              <label class="demo-form-wide"><span>发放理由</span><textarea name="reason" required minlength="12" maxlength="1000" rows="2">为M45.2纯虚构客户资料入口发放可追责的Case链接。</textarea></label>
+              <div class="demo-form-actions"><button class="button button-primary-inline" type="submit">生成客户资料入口</button><span>仅主管/管理员 · 完整链接只显示一次</span></div>
+            </form>
+            <div id="demo-form-issued-link" class="demo-form-issued-link" hidden aria-live="polite"></div>
+          </section>
+          <section class="work-section" aria-labelledby="client-question-title">
+            <div class="section-heading"><div><h2 id="client-question-title">向提交者发布问题</h2><p>从已有 Issue 生成一条独立的客户可见问题；内部备注、规则原因和AI结果不会被复制。</p></div></div>
+            <form id="client-question-form" class="demo-form-invitation-form">
+              <label><span>纯虚构 Case</span><select name="caseId" required></select></label>
+              <label><span>关联开放 Issue</span><select name="issueId" required></select></label>
+              <label class="demo-form-wide"><span>客户看到的标题</span><input name="publicTitle" required minlength="3" maxlength="160" value="请补交一份可识别的资料"></label>
+              <label class="demo-form-wide"><span>客户看到的说明</span><textarea name="publicBody" required minlength="12" maxlength="2000" rows="3">请根据当前资料清单补交相应文件。只可使用完全虚构的测试资料。</textarea></label>
+              <label class="demo-form-wide"><span>内部发布理由</span><textarea name="reason" required minlength="12" maxlength="1000" rows="2">为M45.2纯虚构入口发布最小必要的客户可见补交问题。</textarea></label>
+              <div class="demo-form-actions"><button class="button button-primary-inline" type="submit">发布给提交者</button><span>发布、替换、解决和撤回均保留审计</span></div>
+            </form>
+            <div id="client-question-list"></div>
+          </section>
+          <section class="work-section" aria-labelledby="demo-form-status-title">
+            <div class="section-heading"><div><h2 id="demo-form-status-title">入口与邀请状态</h2><p>可撤销未结束邀请；使用次数和失效时间由数据库强制。</p></div></div>
+            <div id="demo-form-entry-summary"></div>
+            <div id="demo-form-invitation-list"></div>
+          </section>
+        </section>
+
+        <section id="access-view" class="view" aria-labelledby="view-title" hidden>
+          <div class="access-boundary">
+            <strong>身份供应商与业务权限分离</strong>
+            <p>这里管理 Canonical Actor。邀请仅保存为草稿，不创建 Supabase 用户、不发送邮件；正式开通仍是单独的受控步骤。</p>
+          </div>
+          <section class="work-section" aria-labelledby="access-members-title">
+            <div class="section-heading"><div><h2 id="access-members-title">人员</h2><p>角色与状态变更立即影响现有会话，并写入不可变业务事件。</p></div></div>
+            <div id="access-members"></div>
+          </section>
+          <section class="work-section access-invitations" aria-labelledby="access-invitations-title">
+            <div class="section-heading"><div><h2 id="access-invitations-title">邀请草稿</h2><p>当前阶段外部发送关闭。此表单不会投递邮件。</p></div></div>
+            <form id="invitation-form" class="access-form">
+              <div class="access-field"><label for="invite-name">姓名</label><input id="invite-name" name="displayName" required minlength="2" maxlength="120"></div>
+              <div class="access-field"><label for="invite-email">工作邮箱</label><input id="invite-email" name="email" type="email" required maxlength="254"></div>
+              <div class="access-field"><label for="invite-role">拟授予角色</label><select id="invite-role" name="actorType"><option value="staff">员工</option><option value="manager">主管</option><option value="admin">管理员</option></select></div>
+              <div class="access-field access-field-wide"><label for="invite-reason">业务理由</label><textarea id="invite-reason" name="reason" required minlength="12" maxlength="1000" placeholder="说明为什么需要创建此访问草稿。"></textarea><span>至少 12 个字符；进入永久审计记录。</span></div>
+              <div class="access-form-actions"><button class="button button-primary-inline" type="submit">创建草稿（不发送）</button></div>
+            </form>
+            <div id="access-invitations"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

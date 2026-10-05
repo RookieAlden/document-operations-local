@@ -1,0 +1,53 @@
+{
+  "fictional": true,
+  "client": "Blue Peak Consulting Limited",
+  "casePeriod": {
+    "start": "2026-09-01",
+    "end": "2026-09-30"
+  },
+  "purpose": "Six integration checks, not a statistical accuracy certification",
+  "files": [
+    {
+      "file": "01-bank-statement.pdf",
+      "sha256": "e8fc6b8ed2111c7c78fbe82b825fe167af7372d524b06d4c59a74c4d7dd487c8",
+      "category": "standard",
+      "expectedType": "bank_statement",
+      "expectedHandling": "Classify from original content; review if uncertain"
+    },
+    {
+      "file": "02-sales-invoice.pdf",
+      "sha256": "fec62562811012ef159a6050a6299abbec4f0e3fe3fbc53b6a24aa3fa30a7e17",
+      "category": "standard",
+      "expectedType": "invoice",
+      "expectedHandling": "Classify from original content; review if uncertain"
+    },
+    {
+      "file": "03-expense-receipt.pdf",
+      "sha256": "de6ffab822eecfea7d7b812ca3f81ebb3ecbc9c6cd08ef587c09d51e6b489ca3",
+      "category": "standard",
+      "expectedType": "expense_receipt",
+      "expectedHandling": "Classify from original content; review if uncertain"
+    },
+    {
+      "file": "04-independent-statement.pdf",
+      "sha256": "d118561bf35afd2a5948db5efc4c6d736a8341e27daf846dd86e3539f52818ae",
+      "category": "independent_layout",
+      "expectedType": "bank_statement",
+      "expectedHandling": "Classify from original content; review if uncertain"
+    },
+    {
+      "file": "05-wrong-period.pdf",
+      "sha256": "16591e07522842bfa4a75275c8c4fffb3b57062179ccb755ec90f28055b03cc7",
+      "category": "wrong_period",
+      "expectedType": "bank_statement",
+      "expectedHandling": "Must flag the mismatched period and require review"
+    },
+    {
+      "file": "06-garden-notes.pdf",
+      "sha256": "ae5aa1b7d330b453087a0b25ce04d54db1df80f852999adee93e1270258a3e7a",
+      "category": "unknown",
+      "expectedType": null,
+      "expectedHandling": "Must abstain / require review; never count toward requirements"
+    }
+  ]
+}
