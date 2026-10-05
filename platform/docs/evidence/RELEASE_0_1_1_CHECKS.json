@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-05",
+  "release": "v0.1.1",
+  "scope": "Release documentation and existing manual example; no business feature changes",
+  "environment": {
+    "os": "macOS 26.5.1 (25F80)",
+    "architecture": "arm64",
+    "node": "24.19.0",
+    "pnpm": "11.16.0",
+    "postgres": "17.10",
+    "browser": "Google Chrome 154.0.8037.93"
+  },
+  "installation": {
+    "source": "Fresh clone of public repository, followed by release documentation update",
+    "database": "New dedicated PostgreSQL data directory",
+    "personalSettings": "New interactive setup, no API key",
+    "dependencyInstall": "Frozen lockfile, empty dedicated pnpm store, 81 packages downloaded from registry",
+    "runtimePreparation": "Existing Node/PostgreSQL binaries reused; pinned pnpm obtained from official npm registry. Homebrew bootstrap was documented but not reinstalled."
+  },
+  "typecheck": "passed",
+  "unitAndInterfaceTests": 406,
+  "testFiles": 63,
+  "example": {
+    "customer": "Blue Peak Consulting Limited",
+    "period": "2026 Q3",
+    "requiredTypes": [
+      "bank_statement",
+      "invoice",
+      "expense_receipt"
+    ],
+    "minimumEach": 1,
+    "uploadedSamples": [
+      "02-sales-invoice.pdf",
+      "03-expense-receipt.pdf",
+      "05-wrong-period.pdf",
+      "06-garden-notes.pdf",
+      "01-bank-statement.pdf"
+    ],
+    "accepted": 3,
+    "excludedOriginalsRetained": 2,
+    "openQuestionBlocksEvenAfterSupplement": true,
+    "uniqueHandoffTask": true,
+    "completedHistoryAndPdfExport": true,
+    "originalPreviewHashesVerified": 5
+  },
+  "restart": {
+    "sameLogin": true,
+    "fiveFilesRetained": true,
+    "handoffTaskRetained": true,
+    "setupPreservesExistingSettings": true
+  },
+  "coldBackup": {
+    "completed": true,
+    "originalsVerified": 5
+  },
+  "paidAICalls": 0,
+  "screenshots": "Real browser captures from this isolated fictional example; no generated or mocked AI results",
+  "limitations": [
+    "Same computer only; no new-machine installation verification",
+    "Homebrew installation itself not rerun",
+    "No full application verification on Windows or Linux",
+    "No new paid AI test or model evaluation",
+    "No cross-machine restore test"
+  ]
+}

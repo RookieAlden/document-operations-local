@@ -36,7 +36,7 @@
   "privateGitHistoryIncluded": false,
   "limitations": [
     "Same-machine install only; not tested on Linux or Windows",
-    "No claim of a fresh-network dependency download",
-    "Cloud resources not changed; publishing needs approval"
-  ]
+    "No claim of a fresh-network dependency download"
+  ],
+  "historicalContext": "Pre-publication check of the initial release, retained as dated evidence; not current release status"
 }
